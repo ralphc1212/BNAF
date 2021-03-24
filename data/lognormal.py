@@ -7,7 +7,7 @@ class data_lognormal:
         with open(location+'/lognormal.out', 'r') as f:
             lines = f.readlines()
 
-        self.all = torch.from_numpy(np.array([float(x) for x in lines])).float()
+        self.all = torch.from_numpy(np.array([float(x) for x in lines])).unsqueeze(1).float()
 
         del lines
         f.close()
