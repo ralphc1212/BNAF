@@ -153,7 +153,7 @@ def plot_energy2d(model, args, limit=4, step=0.05, resolution=(10000, 10000)):
     else:
         plt.show()
 
-
+## test
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', type=str, default='cuda:0')
