@@ -11,7 +11,7 @@ from torch.utils import data
 from bnaf import *
 from tqdm import trange
 from data.generate2d import sample2d, energy2d
-
+from data.lognormal import data_lognormal
 
 def create_model(args, verbose=False):
     
@@ -183,6 +183,10 @@ def main():
 
     args = parser.parse_args()
 
+    d_tensors = data_lognormal('~/data')
+    print(d_tensors.shape)
+    print(d_tensors[:10])
+    exit()
     print('Arguments:')
     pprint.pprint(args.__dict__)
 
