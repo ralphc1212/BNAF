@@ -10,6 +10,7 @@ import torch
 from torch.utils import data
 from bnaf import *
 from tqdm import trange
+import tqdm
 from data.generate2d import sample2d, energy2d
 from data.lognormal import data_lognormal
 from torch.utils.data import TensorDataset, DataLoader
@@ -53,8 +54,9 @@ def compute_log_p_x(model, x_mb):
 
 
 def train_density1d(model, dataloader, optimizer, scheduler, args):
-    iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
-    for x_mb in dataloader:
+    # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
+    t = tqdm(dataloader, smoothing=0, ncols=80)
+    for x_mb in t:
 
         print(x_mb)
         loss = - compute_log_p_x(model, x_mb).mean()
@@ -67,7 +69,7 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
 
         scheduler.step(loss)
 
-        iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
+        # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
         
         
 def compute_kl(model, args):
@@ -186,7 +188,6 @@ def main():
     d_tensors = data_lognormal('/home/nandcui/data').all
 
     dataset = TensorDataset(d_tensors)
-    print(len(dataset))
     dataloader = DataLoader(dataset, batch_size=8192, shuffle=True)
 
     print('Arguments:')
