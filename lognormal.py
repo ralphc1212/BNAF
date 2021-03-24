@@ -34,7 +34,7 @@ def create_model(args, verbose=False):
         )
 
         if f < args.flows - 1:
-            flows.append(Permutation(2, 'flip'))
+            flows.append(Permutation(1, 'flip'))
 
     model = Sequential(*flows).to(args.device)
     
