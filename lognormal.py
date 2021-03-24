@@ -56,12 +56,13 @@ def compute_log_p_x(model, x_mb):
 import math
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
-    t = tqdm(dataloader, smoothing=0, ncols=80)
+
     best_loss = 1e20
 
     for epoch in range(args.steps):
         tloss = 0
         cnt = 0
+        t = tqdm(dataloader, smoothing=0, ncols=80)
         for x in t:
             cnt += 1
             x_mb = x[0].to(args.device)
@@ -201,7 +202,7 @@ def main():
     args.save = True
     d_tensors = data_lognormal('/home/nandcui/data').all
 
-    dataset = TensorDataset(d_tensors[:8192])
+    dataset = TensorDataset(d_tensors)
     dataloader = DataLoader(dataset, batch_size=1024, shuffle=True)
 
     print('Arguments:')
