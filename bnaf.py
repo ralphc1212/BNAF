@@ -217,12 +217,7 @@ class MaskedWeight(torch.nn.Module):
         w, wpl = self.get_weights()
         
         g = wpl.transpose(-2, -1).unsqueeze(0).repeat(inputs.shape[0], 1, 1, 1)
-        print(inputs.shape)
-        print(w.shape)
-        print(w)
-        print(self.bias.shape)
-        print('--------')
-        exit()
+
         return inputs.matmul(w) + self.bias, torch.logsumexp(
             g.unsqueeze(-2) + grad.transpose(-2, -1).unsqueeze(-3), -1) if grad is not None else g
 
