@@ -56,6 +56,7 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
     iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     for x_mb in dataloader:
 
+        print(x_mb)
         loss = - compute_log_p_x(model, x_mb).mean()
 
         loss.backward()
