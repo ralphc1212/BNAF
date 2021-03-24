@@ -203,7 +203,7 @@ def main():
     d_tensors = data_lognormal('/home/nandcui/data').all
 
     dataset = TensorDataset(d_tensors)
-    dataloader = DataLoader(dataset, batch_size=1024, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=2048, shuffle=True)
 
     print('Arguments:')
     pprint.pprint(args.__dict__)
