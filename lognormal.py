@@ -21,14 +21,14 @@ def create_model(args, verbose=False):
     for f in range(args.flows):
         layers = []
         for _ in range(args.layers - 1):
-            layers.append(MaskedWeight(2 * args.hidden_dim,
-                                       2 * args.hidden_dim, dim=1))
+            layers.append(MaskedWeight(1 * args.hidden_dim,
+                                       1 * args.hidden_dim, dim=1))
             layers.append(Tanh())
 
         flows.append(
-            BNAF(*([MaskedWeight(2, 2 * args.hidden_dim, dim=1), Tanh()] + \
+            BNAF(*([MaskedWeight(1, 1 * args.hidden_dim, dim=1), Tanh()] + \
                    layers + \
-                   [MaskedWeight(2 * args.hidden_dim, 2, dim=1)]),\
+                   [MaskedWeight(1 * args.hidden_dim, 1, dim=1)]),\
                  res='gated' if f < args.flows - 1 else False
             )
         )
