@@ -49,6 +49,9 @@ def create_model(args, verbose=False):
 
 def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
+    y_mb = torch.sigmoid(y_mb)
+    print(y_mb)
+    exit()
     log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)).log_prob(y_mb).sum(-1)
     return log_p_y_mb + log_diag_j_mb
 
@@ -56,6 +59,7 @@ def compute_log_p_x(model, x_mb):
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     t = tqdm(dataloader, smoothing=0, ncols=80)
+
     for x in t:
         x_mb = x[0].to(args.device)
         loss = - compute_log_p_x(model, x_mb).mean()
