@@ -57,8 +57,6 @@ def train_density2d(model, optimizer, scheduler, args):
 
         x_mb = torch.from_numpy(sample2d(args.dataset, args.batch_dim)).float().to(args.device)
 
-        print(x_mb.shape)
-        exit()
         loss = - compute_log_p_x(model, x_mb).mean()
 
         loss.backward()
