@@ -184,8 +184,8 @@ def main():
     args = parser.parse_args()
 
     d_tensors = data_lognormal('/home/nandcui/data').all
-    print(d_tensors.shape)
-    print(d_tensors[:10])
+
+    print(d_tensors[-10:])
     exit()
     print('Arguments:')
     pprint.pprint(args.__dict__)
