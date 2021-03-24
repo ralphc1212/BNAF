@@ -41,7 +41,7 @@ def create_model(args, verbose=False):
         print('{}'.format(model))
         print('Parameters={}, n_dims={}'.format(sum((p != 0).sum() 
                                                     if len(p.shape) > 1 else torch.tensor(p.shape).item() 
-                                                    for p in model.parameters()), 2))
+                                                    for p in model.parameters()), 1))
     
     return model
 
@@ -185,6 +185,8 @@ def main():
 
     d_tensors = data_lognormal('/home/nandcui/data').all
 
+    print(d_tensors.shape)
+    exit()
     dataset = TensorDataset(d_tensors)
     dataloader = DataLoader(dataset, batch_size=8192, shuffle=True)
 
