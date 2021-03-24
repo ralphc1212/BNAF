@@ -56,9 +56,8 @@ def compute_log_p_x(model, x_mb):
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     t = tqdm(dataloader, smoothing=0, ncols=80)
-    for x_mb in t:
-
-        print(x_mb)
+    for x in t:
+        x_mb = x[0]
         loss = - compute_log_p_x(model, x_mb).mean()
 
         loss.backward()
