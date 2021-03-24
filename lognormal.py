@@ -57,6 +57,8 @@ def compute_log_p_x(model, x_mb):
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     t = tqdm(dataloader, smoothing=0, ncols=80)
+    best_loss = 1e20
+
     for epoch in range(args.steps):
         tloss = 0
         cnt = 0
@@ -64,7 +66,6 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
             cnt += 1
             x_mb = x[0].to(args.device)
             loss = - compute_log_p_x(model, x_mb).mean()
-            print(loss)
             tloss += loss.item()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=args.clip_norm)
@@ -75,8 +76,12 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
             scheduler.step(loss)
         print('epoch {}, loss {}'.format(epoch, tloss/cnt))
             # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
-        
-        
+
+        if tloss < best_loss:
+            print('Saving..')
+            best_loss = tloss
+            save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
+
 def compute_kl(model, args):
     d_mb = torch.distributions.Normal(torch.zeros((args.batch_dim, 2)).to(args.device),
                                       torch.ones((args.batch_dim, 2)).to(args.device))
@@ -180,7 +185,7 @@ def main():
 
     parser.add_argument('--flows', type=int, default=1)
     parser.add_argument('--layers', type=int, default=3)
-    parser.add_argument('--hidden_dim', type=int, default=50)
+    parser.add_argument('--hidden_dim', type=int, default=256)
 
     parser.add_argument('--expname', type=str, default='')
     parser.add_argument('--load', type=str, default=None)
@@ -230,9 +235,9 @@ def main():
     else:
         train_energy1d(model, optimizer, scheduler, args)
     
-    if args.save:
-        print('Saving..')
-        save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
+    # if args.save:
+    #     print('Saving..')
+    #     save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
 
     # print('Plotting..')
     # if args.experiment == 'density2d':
