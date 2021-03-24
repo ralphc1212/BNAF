@@ -50,9 +50,6 @@ def create_model(args, verbose=False):
 def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
     y_mb = torch.sigmoid(y_mb)
-    print(y_mb)
-    print(y_mb.shape)
-    exit()
     log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)).log_prob(y_mb).sum(-1)
     return log_p_y_mb + log_diag_j_mb
 
@@ -60,20 +57,24 @@ def compute_log_p_x(model, x_mb):
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     t = tqdm(dataloader, smoothing=0, ncols=80)
+    for epoch in range(args.steps):
+        tloss = 0
+        cnt = 0
+        for x in t:
+            cnt += 1
+            x_mb = x[0].to(args.device)
+            loss = - compute_log_p_x(model, x_mb).mean()
+            print(loss)
+            tloss += loss.item()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=args.clip_norm)
 
-    for x in t:
-        x_mb = x[0].to(args.device)
-        loss = - compute_log_p_x(model, x_mb).mean()
+            optimizer.step()
+            optimizer.zero_grad()
 
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=args.clip_norm)
-
-        optimizer.step()
-        optimizer.zero_grad()
-
-        scheduler.step(loss)
-
-        # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
+            scheduler.step(loss)
+        print('epoch {}, loss {}'.format(epoch, tloss/cnt))
+            # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
         
         
 def compute_kl(model, args):
