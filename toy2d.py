@@ -57,6 +57,8 @@ def train_density2d(model, optimizer, scheduler, args):
 
         x_mb = torch.from_numpy(sample2d(args.dataset, args.batch_dim)).float().to(args.device)
 
+        print(x_mb.shape)
+        exit()
         loss = - compute_log_p_x(model, x_mb).mean()
 
         loss.backward()
@@ -190,8 +192,7 @@ def main():
         args.expname + ('_' if args.expname != '' else ''),
         args.dataset, args.layers, args.hidden_dim, args.flows,
         str(datetime.datetime.now())[:-7].replace(' ', '-').replace(':', '-')))
-    print(args.path)
-    exit()
+
     if (args.save or args.savefig) and not args.load:
         print('Creating directory experiment..')
         os.mkdir(args.path)

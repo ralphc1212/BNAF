@@ -51,7 +51,7 @@ def compute_log_p_x(model, x_mb):
     return log_p_y_mb + log_diag_j_mb
 
 
-def train_density2d(model, optimizer, scheduler, args):
+def train_density1d(model, optimizer, scheduler, args):
     iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     for epoch in iterator:
 
@@ -79,7 +79,7 @@ def compute_kl(model, args):
     return log_p_y_mb - log_diag_j_mb + energy2d(args.dataset, x_mb)         + (torch.relu(x_mb.abs() - 6) ** 2).sum(-1)
 
 
-def train_energy2d(model, optimizer, scheduler, args):
+def train_energy1d(model, optimizer, scheduler, args):
     iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     for epoch in iterator:
 
@@ -160,8 +160,8 @@ def main():
     parser.add_argument('--device', type=str, default='cuda:0')
     parser.add_argument('--dataset', type=str, default='lognormal',
                         choices=['lognormal'])
-    parser.add_argument('--experiment', type=str, default='lognormal',
-                        choices=['lognormal'])
+    parser.add_argument('--experiment', type=str, default='density1d',
+                        choices=['density1d', 'energy1d'])
 
     parser.add_argument('--learning_rate', type=float, default=1e-1)
     parser.add_argument('--batch_dim', type=int, default=200)
@@ -191,9 +191,6 @@ def main():
         args.dataset, args.layers, args.hidden_dim, args.flows,
         str(datetime.datetime.now())[:-7].replace(' ', '-').replace(':', '-')))
 
-    print(args.path)
-    exit()
-
     if (args.save or args.savefig) and not args.load:
         print('Creating directory experiment..')
         os.mkdir(args.path)
@@ -216,20 +213,20 @@ def main():
         load(model, optimizer, os.path.join(args.load, 'checkpoint.pt'))
         
     print('Training..')
-    if args.experiment == 'density2d':
-        train_density2d(model, optimizer, scheduler, args)
-    elif args.experiment == 'energy2d':
-        train_energy2d(model, optimizer, scheduler, args)
+    if args.experiment == 'density1d':
+        train_density1d(model, optimizer, scheduler, args)
+    else:
+        train_energy1d(model, optimizer, scheduler, args)
     
     if args.save:
         print('Saving..')
         save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
-    
-    print('Plotting..')
-    if args.experiment == 'density2d':
-        plot_density2d(model, args)
-    elif args.experiment == 'energy2d':
-        plot_energy2d(model, args)
+
+    # print('Plotting..')
+    # if args.experiment == 'density2d':
+    #     plot_density2d(model, args)
+    # elif args.experiment == 'energy2d':
+    #     plot_energy2d(model, args)
 
 
 if __name__ == '__main__':
