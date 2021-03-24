@@ -195,6 +195,7 @@ def main():
 
     args = parser.parse_args()
 
+    args.save = True
     d_tensors = data_lognormal('/home/nandcui/data').all
 
     dataset = TensorDataset(d_tensors[:8192])
