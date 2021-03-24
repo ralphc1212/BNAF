@@ -10,7 +10,7 @@ import torch
 from torch.utils import data
 from bnaf import *
 from tqdm import trange
-import tqdm
+from tqdm import tqdm
 from data.generate2d import sample2d, energy2d
 from data.lognormal import data_lognormal
 from torch.utils.data import TensorDataset, DataLoader
