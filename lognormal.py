@@ -51,6 +51,7 @@ def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
     y_mb = torch.sigmoid(y_mb)
     print(y_mb)
+    print(y_mb.shape)
     exit()
     log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)).log_prob(y_mb).sum(-1)
     return log_p_y_mb + log_diag_j_mb
