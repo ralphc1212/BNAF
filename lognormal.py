@@ -53,7 +53,7 @@ def compute_log_p_x(model, x_mb):
     log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)).log_prob(y_mb).sum(-1)
     return log_p_y_mb + log_diag_j_mb
 
-
+import math
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     t = tqdm(dataloader, smoothing=0, ncols=80)
@@ -77,7 +77,7 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
         print('epoch {}, loss {}'.format(epoch, tloss/cnt))
             # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
 
-        if torch.isnan(tloss):
+        if math.isnan(tloss):
             print('loss nan')
             exit()
         if tloss < best_loss:
