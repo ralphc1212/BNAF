@@ -77,6 +77,9 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
         print('epoch {}, loss {}'.format(epoch, tloss/cnt))
             # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
 
+        if torch.isnan(tloss):
+            print('loss nan')
+            exit()
         if tloss < best_loss:
             print('Saving..')
             best_loss = tloss
