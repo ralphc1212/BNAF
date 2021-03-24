@@ -184,10 +184,9 @@ def main():
     args = parser.parse_args()
 
     d_tensors = data_lognormal('/home/nandcui/data').all
-    print(d_tensors)
-    print(d_tensors.shape)
-    exit()
+
     dataset = TensorDataset(d_tensors)
+    print(len(dataset))
     dataloader = DataLoader(dataset, batch_size=8192, shuffle=True)
 
     print('Arguments:')
