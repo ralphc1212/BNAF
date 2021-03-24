@@ -12,6 +12,7 @@ from bnaf import *
 from tqdm import trange
 from data.generate2d import sample2d, energy2d
 from data.lognormal import data_lognormal
+from torch.utils.data import TensorDataset, DataLoader
 
 def create_model(args, verbose=False):
     
@@ -20,13 +21,13 @@ def create_model(args, verbose=False):
         layers = []
         for _ in range(args.layers - 1):
             layers.append(MaskedWeight(2 * args.hidden_dim,
-                                       2 * args.hidden_dim, dim=2))
+                                       2 * args.hidden_dim, dim=1))
             layers.append(Tanh())
 
         flows.append(
-            BNAF(*([MaskedWeight(2, 2 * args.hidden_dim, dim=2), Tanh()] + \
+            BNAF(*([MaskedWeight(2, 2 * args.hidden_dim, dim=1), Tanh()] + \
                    layers + \
-                   [MaskedWeight(2 * args.hidden_dim, 2, dim=2)]),\
+                   [MaskedWeight(2 * args.hidden_dim, 2, dim=1)]),\
                  res='gated' if f < args.flows - 1 else False
             )
         )
@@ -51,11 +52,9 @@ def compute_log_p_x(model, x_mb):
     return log_p_y_mb + log_diag_j_mb
 
 
-def train_density1d(model, optimizer, scheduler, args):
+def train_density1d(model, dataloader, optimizer, scheduler, args):
     iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
-    for epoch in iterator:
-
-        x_mb = torch.from_numpy(sample2d(args.dataset, args.batch_dim)).float().to(args.device)
+    for x_mb in dataloader:
 
         loss = - compute_log_p_x(model, x_mb).mean()
 
@@ -64,7 +63,7 @@ def train_density1d(model, optimizer, scheduler, args):
 
         optimizer.step()
         optimizer.zero_grad()
-        
+
         scheduler.step(loss)
 
         iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
@@ -185,8 +184,9 @@ def main():
 
     d_tensors = data_lognormal('/home/nandcui/data').all
 
-    print(d_tensors[-10:])
-    exit()
+    dataset = TensorDataset(d_tensors)
+    dataloader = DataLoader(dataset, batch_size=8192, shuffle=True)
+
     print('Arguments:')
     pprint.pprint(args.__dict__)
 
@@ -218,7 +218,7 @@ def main():
         
     print('Training..')
     if args.experiment == 'density1d':
-        train_density1d(model, optimizer, scheduler, args)
+        train_density1d(model, dataloader, optimizer, scheduler, args)
     else:
         train_energy1d(model, optimizer, scheduler, args)
     
