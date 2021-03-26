@@ -50,7 +50,7 @@ def create_model(args, verbose=False):
 def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
     y_mb = torch.sigmoid(y_mb)
-    log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)).log_prob(y_mb).sum(-1)
+    log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*10000).log_prob(y_mb).sum(-1)
     return log_p_y_mb + log_diag_j_mb
 
 import math
@@ -202,7 +202,12 @@ def main():
     args.save = True
     d_tensors = data_lognormal('/home/nandcui/data').all
 
-    dataset = TensorDataset(d_tensors)
+    x = d_tensors.clone()
+    indices = torch.randperm(x.shape[0])[:100000]
+
+    x = x[indices]
+
+    dataset = TensorDataset(x)
     dataloader = DataLoader(dataset, batch_size=2048, shuffle=True)
 
     print('Arguments:')
