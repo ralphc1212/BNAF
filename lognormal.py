@@ -269,7 +269,7 @@ def main():
 
     results = test_density1d(model,dataloader,args)
 
-    np.savetxt('lognormal_100_powerful.txt', results.detach().cpu().numpy())
+    np.savetxt('lognormal_100_powerful.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
