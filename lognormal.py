@@ -264,12 +264,12 @@ def main():
         train_energy1d(model, optimizer, scheduler, args)
 
 
-    dataset = TensorDataset(d_tensors)
+    dataset = TensorDataset(d_tensors[:10])
     dataloader = DataLoader(dataset, batch_size=2048, shuffle=False)
 
     results = test_density1d(model,dataloader,args)
 
-    np.savetxt('lognormal_100_powerful.txt', results.detach().numpy())
+    np.savetxt('lognormal_100_powerful.txt', results.detach().cpu().numpy())
 
     # if args.save:
     #     print('Saving..')
