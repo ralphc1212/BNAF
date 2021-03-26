@@ -68,8 +68,7 @@ def train_density2d(model, optimizer, scheduler, args):
         scheduler.step(loss)
 
         iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
-        
-        
+
 def compute_kl(model, args):
     d_mb = torch.distributions.Normal(torch.zeros((args.batch_dim, 2)).to(args.device),
                                       torch.ones((args.batch_dim, 2)).to(args.device))
@@ -101,8 +100,7 @@ def load(model, optimizer, path):
     checkpoint = torch.load(path)
     model.load_state_dict(checkpoint['model'])
     optimizer.load_state_dict(checkpoint['optimizer'])
-    
-    
+
 def save(model, optimizer, path):
     print('Saving model..')
     torch.save({
