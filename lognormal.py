@@ -86,6 +86,22 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
             best_loss = tloss
             save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
 
+def test_density1d(model, dataloader, args):
+    # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
+    model.eval()
+    cnt = 0
+    t = tqdm(dataloader, smoothing=0, ncols=80)
+    results = []
+    with torch.no_grad():
+        for x in t:
+            cnt += 1
+            x_mb = x[0].to(args.device)
+            y_mb, log_diag_j_mb = model(x_mb)
+            results.append(y_mb)
+        return torch.cat(results)
+        # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
+
+
 def compute_kl(model, args):
     d_mb = torch.distributions.Normal(torch.zeros((args.batch_dim, 2)).to(args.device),
                                       torch.ones((args.batch_dim, 2)).to(args.device))
@@ -182,7 +198,7 @@ def main():
     parser.add_argument('--learning_rate', type=float, default=1e-1)
     parser.add_argument('--batch_dim', type=int, default=200)
     parser.add_argument('--clip_norm', type=float, default=.1)
-    parser.add_argument('--steps', type=int, default=20000)
+    parser.add_argument('--steps', type=int, default=15)
     
     parser.add_argument('--patience', type=int, default=2000)
     parser.add_argument('--decay', type=float, default=0.5)
@@ -196,6 +212,7 @@ def main():
     parser.add_argument('--save', action='store_true')
     parser.add_argument('--savefig', action='store_true')
     parser.add_argument('--reduce_extreme', action='store_true')
+    parser.add_argument('--test', action='store_true')
 
     args = parser.parse_args()
 
@@ -209,6 +226,7 @@ def main():
 
     dataset = TensorDataset(x)
     dataloader = DataLoader(dataset, batch_size=2048, shuffle=True)
+
 
     print('Arguments:')
     pprint.pprint(args.__dict__)
@@ -244,7 +262,15 @@ def main():
         train_density1d(model, dataloader, optimizer, scheduler, args)
     else:
         train_energy1d(model, optimizer, scheduler, args)
-    
+
+
+    dataset = TensorDataset(d_tensors)
+    dataloader = DataLoader(dataset, batch_size=2048, shuffle=False)
+
+    results = test_density1d(model,dataloader,args)
+
+    np.savetxt('lognormal_100_powerful.txt', results.detach().numpy())
+
     # if args.save:
     #     print('Saving..')
     #     save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
