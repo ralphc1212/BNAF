@@ -230,7 +230,7 @@ def main():
     x = x[indices]
 
     dataset = TensorDataset(x)
-    dataloader = DataLoader(dataset, batch_size=2048, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=True)
 
 
     print('Arguments:')
@@ -274,7 +274,7 @@ def main():
 
     results = test_density1d(model,dataloader,args)
 
-    np.savetxt('lognormal-100-layer1-nodes-8-trdata1m.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer3-nodes-16-trdata1m.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
