@@ -209,8 +209,8 @@ def main():
     parser.add_argument('--decay', type=float, default=0.5)
 
     parser.add_argument('--flows', type=int, default=1)
-    parser.add_argument('--layers', type=int, default=3)
-    parser.add_argument('--hidden_dim', type=int, default=4)
+    parser.add_argument('--layers', type=int, default=2)
+    parser.add_argument('--hidden_dim', type=int, default=16)
 
     parser.add_argument('--expname', type=str, default='')
     parser.add_argument('--load', type=str, default=None)
@@ -274,7 +274,7 @@ def main():
 
     results = test_density1d(model,dataloader,args)
 
-    np.savetxt('lognormal-100-tiny.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer2-nodes-16-16.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
