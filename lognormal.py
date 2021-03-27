@@ -209,8 +209,8 @@ def main():
     parser.add_argument('--decay', type=float, default=0.5)
 
     parser.add_argument('--flows', type=int, default=1)
-    parser.add_argument('--layers', type=int, default=3)
-    parser.add_argument('--hidden_dim', type=int, default=16)
+    parser.add_argument('--layers', type=int, default=1)
+    parser.add_argument('--hidden_dim', type=int, default=8)
 
     parser.add_argument('--expname', type=str, default='')
     parser.add_argument('--load', type=str, default=None)
@@ -225,7 +225,7 @@ def main():
     d_tensors = data_lognormal('/home/nandcui/data').all
 
     x = d_tensors.clone()
-    indices = torch.randperm(x.shape[0])[:1000000]
+    indices = torch.randperm(x.shape[0])[:3000000]
 
     x = x[indices]
 
@@ -274,7 +274,7 @@ def main():
 
     results = test_density1d(model,dataloader,args)
 
-    np.savetxt('lognormal-100-layer3-nodes-16-trdata1m.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata3m.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
