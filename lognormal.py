@@ -88,7 +88,9 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
             best_loss = tloss
             save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
 
+import time
 def test_density1d(model, dataloader, args):
+    start = time.time()
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
     model.eval()
     cnt = 0
@@ -103,6 +105,7 @@ def test_density1d(model, dataloader, args):
         return torch.cat(results)
         # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
 
+    print(time.time()-start)
 
 def compute_kl(model, args):
     d_mb = torch.distributions.Normal(torch.zeros((args.batch_dim, 2)).to(args.device),
@@ -271,7 +274,7 @@ def main():
 
     results = test_density1d(model,dataloader,args)
 
-    np.savetxt('lognormal_100_latent_uniform.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal_100_small.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
