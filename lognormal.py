@@ -225,7 +225,7 @@ def main():
     d_tensors = data_lognormal('/home/nandcui/data').all
 
     x = d_tensors.clone()
-    indices = torch.randperm(x.shape[0])[:100000]
+    indices = torch.randperm(x.shape[0])[:1000000]
 
     x = x[indices]
 
@@ -274,7 +274,7 @@ def main():
 
     results = test_density1d(model,dataloader,args)
 
-    # np.savetxt('lognormal-100-layer1-nodes-8.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata1m.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
