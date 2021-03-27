@@ -209,8 +209,8 @@ def main():
     parser.add_argument('--decay', type=float, default=0.5)
 
     parser.add_argument('--flows', type=int, default=1)
-    parser.add_argument('--layers', type=int, default=2)
-    parser.add_argument('--hidden_dim', type=int, default=8)
+    parser.add_argument('--layers', type=int, default=1)
+    parser.add_argument('--hidden_dim', type=int, default=16)
 
     parser.add_argument('--expname', type=str, default='')
     parser.add_argument('--load', type=str, default=None)
