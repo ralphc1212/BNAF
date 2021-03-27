@@ -194,7 +194,7 @@ def plot_energy2d(model, args, limit=4, step=0.05, resolution=(10000, 10000)):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--device', type=str, default='cpu')
+    parser.add_argument('--device', type=str, default='cuda:0')
     parser.add_argument('--dataset', type=str, default='lognormal',
                         choices=['lognormal'])
     parser.add_argument('--experiment', type=str, default='density1d',
