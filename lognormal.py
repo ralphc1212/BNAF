@@ -207,7 +207,7 @@ def main():
 
     parser.add_argument('--flows', type=int, default=1)
     parser.add_argument('--layers', type=int, default=3)
-    parser.add_argument('--hidden_dim', type=int, default=256)
+    parser.add_argument('--hidden_dim', type=int, default=16)
 
     parser.add_argument('--expname', type=str, default='')
     parser.add_argument('--load', type=str, default=None)
