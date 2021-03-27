@@ -102,10 +102,10 @@ def test_density1d(model, dataloader, args):
             x_mb = x[0].to(args.device)
             y_mb, log_diag_j_mb = model(x_mb)
             results.append(y_mb)
+        print(time.time() - start)
         return torch.cat(results)
         # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
 
-    print(time.time()-start)
 
 def compute_kl(model, args):
     d_mb = torch.distributions.Normal(torch.zeros((args.batch_dim, 2)).to(args.device),
