@@ -8,13 +8,9 @@ class data_lognormal:
         #     lines = f.readlines()
 
         x = np.loadtxt(location+'/lognormal_100.out', dtype=np.float64)
-        print(len(np.unique(x)))
-        print(len(x))
 
         self.all = torch.from_numpy(x).unsqueeze(1).double()
 
-        print(len(np.unique(x)))
-        print(len(np.unique(self.all)))
-        exit()
+
         # del lines
         # f.close()
