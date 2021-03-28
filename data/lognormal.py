@@ -11,6 +11,7 @@ class data_lognormal:
         self.all = torch.from_numpy(x).unsqueeze(1).double()
 
         print(len(np.unique(x)))
+        print(len(np.unique(self.all)))
         exit()
         # del lines
         # f.close()
