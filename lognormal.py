@@ -57,7 +57,7 @@ def compute_log_p_x(model, x_mb):
     # gmm = torch.distributions.mixture_same_family.MixtureSameFamily(mix, comp)
     # log_p_y_mb = gmm.log_prob(y_mb).sum(-1)
 
-    log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*1e20).log_prob(y_mb).sum(-1)
+    log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*1e16).log_prob(y_mb).sum(-1)
     # log_p_y_mb = torch.distributions.Uniform(torch.zeros_like(y_mb), torch.ones_like(y_mb)*1000000).log_prob(y_mb).sum(-1)
 
     return log_p_y_mb + log_diag_j_mb
