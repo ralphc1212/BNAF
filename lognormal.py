@@ -292,7 +292,7 @@ def main():
     results = test_density1d(model,dataloader,args)
 
 
-    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e16-f64.txt', results.detach().cpu().numpy(),  fmt='%20.64f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e16-f64.txt', results.detach().cpu().numpy(),  fmt='%20.32f')
 
     # if args.save:
     #     print('Saving..')
