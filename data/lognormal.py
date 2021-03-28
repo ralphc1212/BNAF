@@ -9,5 +9,7 @@ class data_lognormal:
 
         self.all = torch.from_numpy(np.array([float(x) for x in lines])).unsqueeze(1).float()
 
+        print(np.unique(self.all))
+        exit()
         del lines
         f.close()
