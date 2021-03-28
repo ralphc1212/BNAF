@@ -51,17 +51,17 @@ def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
     # y_mb = torch.sigmoid(y_mb)
 
-    mix = torch.distributions.Categorical(torch.ones(5,))
-    comp = torch.distributions.Normal(torch.tensor([-500, -250, 0, 250, 500]), torch.ones(5,)*1000000)
+    # mix = torch.distributions.Categorical(torch.ones(5,))
+    # comp = torch.distributions.Normal(torch.tensor([-500, -250, 0, 250, 500]), torch.ones(5,)*1000000)
+    #
+    # gmm = torch.distributions.mixture_same_family.MixtureSameFamily(mix, comp)
+    # log_p_y_mb = gmm.log_prob(y_mb).sum(-1)
 
-    gmm = torch.distributions.mixture_same_family.MixtureSameFamily(mix, comp)
-    log_p_y_mb = gmm.log_prob(y_mb).sum(-1)
-
-    # log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*100000000).log_prob(y_mb).sum(-1)
+    log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*1e6).log_prob(y_mb).sum(-1)
     # log_p_y_mb = torch.distributions.Uniform(torch.zeros_like(y_mb), torch.ones_like(y_mb)*1000000).log_prob(y_mb).sum(-1)
 
     return log_p_y_mb + log_diag_j_mb
-
+np.loadtxt
 import math
 def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
@@ -289,7 +289,7 @@ def main():
     results = test_density1d(model,dataloader,args)
 
 
-    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-multimode-var1e6.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e6.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
