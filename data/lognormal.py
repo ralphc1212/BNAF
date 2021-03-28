@@ -4,12 +4,13 @@ import torch
 class data_lognormal:
 
     def __init__(self, location):
-        with open(location+'/lognormal_100.out', 'r') as f:
-            lines = f.readlines()
+        # with open(location+'/lognormal_100.out', 'r') as f:
+        #     lines = f.readlines()
 
-        self.all = torch.from_numpy(np.array([float(x) for x in lines])).unsqueeze(1).double()
+        x = np.fromtxt(location+'/lognormal_100.out')
+        self.all = torch.from_numpy(x).unsqueeze(1).double()
 
         print(len(np.unique(self.all)))
         exit()
-        del lines
-        f.close()
+        # del lines
+        # f.close()
