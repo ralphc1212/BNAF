@@ -262,7 +262,7 @@ def main():
 
     print('Creating BNAF model..')
     model = create_model(args, verbose=True)
-
+    model.double()
     print('Creating optimizer..')
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, amsgrad=True)
     
