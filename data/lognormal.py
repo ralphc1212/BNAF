@@ -10,7 +10,7 @@ class data_lognormal:
         x = np.loadtxt(location+'/lognormal_100.out')
         self.all = torch.from_numpy(x).unsqueeze(1).double()
 
-        print(len(np.unique(self.all)))
+        print(len(np.unique(x)))
         exit()
         # del lines
         # f.close()
