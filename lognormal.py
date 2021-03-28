@@ -224,8 +224,10 @@ def main():
     args.save = True
     d_tensors = data_lognormal('/home/nandcui/data').all
 
+    # training data
     x = d_tensors.clone()
-    indices = torch.randperm(x.shape[0])[:100000]
+    n_tr_data = 100000
+    indices = torch.randperm(x.shape[0])[:n_tr_data]
 
     x = x[indices]
 
@@ -233,6 +235,7 @@ def main():
     dataloader = DataLoader(dataset, batch_size=4096, shuffle=True)
 
 
+    # path
     print('Arguments:')
     pprint.pprint(args.__dict__)
 
@@ -246,7 +249,8 @@ def main():
         os.mkdir(args.path)
         with open(os.path.join(args.path, 'args.json'), 'w') as f:
             json.dump(args.__dict__, f, indent=4, sort_keys=True)
-    
+
+
     print('Creating BNAF model..')
     model = create_model(args, verbose=True)
 
@@ -264,15 +268,19 @@ def main():
         
     print('Training..')
     if args.experiment == 'density1d':
+
+        # we use this loss function
         train_density1d(model, dataloader, optimizer, scheduler, args)
     else:
         train_energy1d(model, optimizer, scheduler, args)
 
 
+    # testing data
     dataset = TensorDataset(d_tensors)
     dataloader = DataLoader(dataset, batch_size=8192, shuffle=False)
 
     results = test_density1d(model,dataloader,args)
+
 
     np.savetxt('lognormal-100-layer1-nodes-4-trdata10k.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
