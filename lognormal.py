@@ -98,6 +98,7 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
             save(model, optimizer, os.path.join(args.load or args.path, 'checkpoint.pt'))
 
 import time
+
 def test_density1d(model, dataloader, args):
     start = time.time()
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
@@ -287,10 +288,9 @@ def main():
 
     # testing data
     dataset = TensorDataset(d_tensors)
-    dataloader = DataLoader(dataset, batch_size=8192, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False)
 
     results = test_density1d(model,dataloader,args)
-
 
     np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e16-f64.txt', results.detach().cpu().numpy(),  fmt='%32.18f')
 
