@@ -52,7 +52,7 @@ def compute_log_p_x(model, x_mb):
     # y_mb = torch.sigmoid(y_mb)
 
     mix = torch.distributions.Categorical(torch.ones(5,))
-    comp = torch.distributions.Normal(torch.tensor([-500, -250, 0, 250, 500]), torch.ones(5,)*100000000)
+    comp = torch.distributions.Normal(torch.tensor([-500, -250, 0, 250, 500]), torch.ones(5,)*10000000000)
 
     gmm = torch.distributions.mixture_same_family.MixtureSameFamily(mix, comp)
     log_p_y_mb = gmm.log_prob(y_mb).sum(-1)
@@ -289,7 +289,7 @@ def main():
     results = test_density1d(model,dataloader,args)
 
 
-    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-multimode.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-multimode-var1e-10.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
