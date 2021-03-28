@@ -210,7 +210,7 @@ def main():
     parser.add_argument('--learning_rate', type=float, default=1e-1)
     parser.add_argument('--batch_dim', type=int, default=200)
     parser.add_argument('--clip_norm', type=float, default=.1)
-    parser.add_argument('--steps', type=int, default=10)
+    parser.add_argument('--steps', type=int, default=15)
     
     parser.add_argument('--patience', type=int, default=2000)
     parser.add_argument('--decay', type=float, default=0.5)
