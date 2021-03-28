@@ -50,7 +50,14 @@ def create_model(args, verbose=False):
 def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
     # y_mb = torch.sigmoid(y_mb)
-    log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*100000000).log_prob(y_mb).sum(-1)
+
+    mix = torch.distributions.Categorical(torch.ones(5,))
+    comp = torch.distributions.Normal(torch.tensor([-500, -250, 0, 250, 500]), torch.ones(5,)*100000000)
+
+    gmm = torch.distributions.mixture_same_family.MixtureSameFamily(mix, comp)
+    log_p_y_mb = gmm.log_prob(y_mb).sum(-1)
+
+    # log_p_y_mb = torch.distributions.Normal(torch.zeros_like(y_mb), torch.ones_like(y_mb)*100000000).log_prob(y_mb).sum(-1)
     # log_p_y_mb = torch.distributions.Uniform(torch.zeros_like(y_mb), torch.ones_like(y_mb)*1000000).log_prob(y_mb).sum(-1)
 
     return log_p_y_mb + log_diag_j_mb
@@ -210,7 +217,7 @@ def main():
 
     parser.add_argument('--flows', type=int, default=1)
     parser.add_argument('--layers', type=int, default=1)
-    parser.add_argument('--hidden_dim', type=int, default=4)
+    parser.add_argument('--hidden_dim', type=int, default=8)
 
     parser.add_argument('--expname', type=str, default='')
     parser.add_argument('--load', type=str, default=None)
@@ -282,7 +289,7 @@ def main():
     results = test_density1d(model,dataloader,args)
 
 
-    np.savetxt('lognormal-100-layer1-nodes-4-trdata10k.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-multimode.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
