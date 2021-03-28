@@ -15,6 +15,8 @@ from data.generate2d import sample2d, energy2d
 from data.lognormal import data_lognormal
 from torch.utils.data import TensorDataset, DataLoader
 
+torch.set_default_dtype(torch.float64)
+
 def create_model(args, verbose=False):
     
     flows = []
@@ -75,10 +77,6 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
         for x in t:
             cnt += 1
             x_mb = x[0].to(args.device)
-            print(x_mb.dtype)
-            for k, v in model.state_dict().items():
-                print(v.dtype)
-            exit()
             loss = - compute_log_p_x(model, x_mb).mean()
             tloss += loss.item()
             loss.backward()
@@ -293,7 +291,7 @@ def main():
     results = test_density1d(model,dataloader,args)
 
 
-    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e16.txt', results.detach().cpu().numpy(),  fmt='%.18f')
+    np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e16-f64.txt', results.detach().cpu().numpy(),  fmt='%.18f')
 
     # if args.save:
     #     print('Saving..')
