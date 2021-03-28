@@ -7,7 +7,7 @@ class data_lognormal:
         # with open(location+'/lognormal_100.out', 'r') as f:
         #     lines = f.readlines()
 
-        x = np.loadtxt(location+'/lognormal_100.out', dtype=np.longdouble)
+        x = np.loadtxt(location+'/lognormal_100.out', dtype=np.float32)
         print(len(np.unique(x)))
         print(len(x))
 
