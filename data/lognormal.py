@@ -9,6 +9,7 @@ class data_lognormal:
 
         x = np.loadtxt(location+'/lognormal_100.out', dtype=np.longdouble)
         print(len(np.unique(x)))
+        print(len(x))
 
         self.all = torch.from_numpy(x).unsqueeze(1).double()
 
