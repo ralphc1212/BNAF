@@ -2,7 +2,6 @@
 import torch
 import math
 
-torch.set_default_dtype(torch.float64)
 
 class Sequential(torch.nn.Sequential):
     """

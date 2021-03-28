@@ -77,6 +77,10 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
         for x in t:
             cnt += 1
             x_mb = x[0].to(args.device)
+            print(x_mb.dtype)
+            for k,v in model.state_dict().items():
+                print(v.dtype)
+            exit()
             loss = - compute_log_p_x(model, x_mb).mean()
             tloss += loss.item()
             loss.backward()
