@@ -265,6 +265,10 @@ def main():
     model = create_model(args, verbose=True)
     # model = model.double()
 
+    for k,v in model.state_dict().items():
+        print(k, v.shape)
+
+    exit()
     print('Creating optimizer..')
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, amsgrad=True)
     
