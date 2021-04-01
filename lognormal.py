@@ -280,7 +280,7 @@ def main():
 
 
     dataset = TensorDataset(x)
-    dataloader = DataLoader(dataset, batch_size=4096, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=True, num_workers=128)
 
 
     # path
@@ -333,7 +333,7 @@ def main():
 
     # testing data
     dataset = TensorDataset(d_tensors)
-    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=64)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=128)
 
     tmodel = create_model(args, verbose=True, test=True)
 
