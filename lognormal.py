@@ -32,13 +32,13 @@ def create_model(args, verbose=False, test=False):
             layers = []
             for _ in range(args.layers - 1):
                 layers.append(MaskedWeight(1 * args.hidden_dim,
-                                           1 * args.hidden_dim, dim=1))
+                                           1 * args.hidden_dim, dim=1, bias=False))
                 layers.append(Tanh())
 
             flows.append(
-                BNAF(*([MaskedWeight(1, 1 * args.hidden_dim, dim=1), Tanh()] + \
+                BNAF(*([MaskedWeight(1, 1 * args.hidden_dim, dim=1, bias=False), Tanh()] + \
                        layers + \
-                       [MaskedWeight(1 * args.hidden_dim, 1, dim=1)]),\
+                       [MaskedWeight(1 * args.hidden_dim, 1, dim=1, bias=False)]),\
                      res='gated' if f < args.flows - 1 else False
                 )
             )
