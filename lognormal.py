@@ -61,13 +61,13 @@ def create_model(args, verbose=False, test=False):
             layers = []
             for _ in range(args.layers - 1):
                 layers.append(MaskedWeightTE(1 * args.hidden_dim,
-                                           1 * args.hidden_dim, dim=1))
+                                           1 * args.hidden_dim, dim=1, bias=False))
                 layers.append(torch.nn.Tanh())
 
             flows.append(
-                BNAFTE(*([MaskedWeightTE(1, 1 * args.hidden_dim, dim=1), torch.nn.Tanh()] + \
+                BNAFTE(*([MaskedWeightTE(1, 1 * args.hidden_dim, dim=1, bias=False), torch.nn.Tanh()] + \
                        layers + \
-                       [MaskedWeightTE(1 * args.hidden_dim, 1, dim=1)]),\
+                       [MaskedWeightTE(1 * args.hidden_dim, 1, dim=1, bias=False)]),\
                      res='gated' if f < args.flows - 1 else False
                 )
             )
@@ -280,7 +280,7 @@ def main():
 
 
     dataset = TensorDataset(x)
-    dataloader = DataLoader(dataset, batch_size=4096, shuffle=True, num_workers=128)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=True, num_workers=16)
 
 
     # path
@@ -333,7 +333,7 @@ def main():
 
     # testing data
     dataset = TensorDataset(d_tensors)
-    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=128)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=16)
 
     tmodel = create_model(args, verbose=True, test=True)
 
