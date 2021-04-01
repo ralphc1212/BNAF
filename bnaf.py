@@ -190,18 +190,17 @@ class MaskedWeight(torch.nn.Module):
         
         w = torch.exp(self._weight) * self.mask_d + self._weight * self.mask_o
 
-        print('1, ', w)
         w_squared_norm = (w ** 2).sum(-1, keepdim=True)
-        print('2, ', w_squared_norm)
 
         w = self._diag_weight.exp() * w / w_squared_norm.sqrt()
-        print('3, ', w)
 
-        wpl = self._diag_weight + self._weight - 0.5 * torch.log(w_squared_norm) 
-        print('4, ', wpl)
-        exit()
-        return w.t(), wpl.t()[self.mask_d.bool().t()].view(
+        if self.train():
+            wpl = self._diag_weight + self._weight - 0.5 * torch.log(w_squared_norm)
+
+            return w.t(), wpl.t()[self.mask_d.bool().t()].view(
             self.dim, self.in_features // self.dim, self.out_features // self.dim)
+        else:
+            return w.t()
 
 
     def forward(self, inputs, grad : torch.Tensor = None):
@@ -217,13 +216,17 @@ class MaskedWeight(torch.nn.Module):
         The output tensor and the log diagonal blocks of the partial log-Jacobian of previous 
         transformations combined with this transformation.
         """
-        
-        w, wpl = self.get_weights()
-        
-        g = wpl.transpose(-2, -1).unsqueeze(0).repeat(inputs.shape[0], 1, 1, 1)
 
-        return inputs.matmul(w) + self.bias, torch.logsumexp(
+        if self.train():
+            w, wpl = self.get_weights()
+
+            g = wpl.transpose(-2, -1).unsqueeze(0).repeat(inputs.shape[0], 1, 1, 1)
+
+            return inputs.matmul(w) + self.bias, torch.logsumexp(
             g.unsqueeze(-2) + grad.transpose(-2, -1).unsqueeze(-3), -1) if grad is not None else g
+        else:
+            w = self.get_weights()
+            return inputs.matmul(w) + self.bias
 
     def __repr__(self):
         return 'MaskedWeight(in_features={}, out_features={}, dim={}, bias={})'.format(

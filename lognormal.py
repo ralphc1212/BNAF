@@ -69,6 +69,7 @@ def train_density1d(model, dataloader, optimizer, scheduler, args):
     # iterator = trange(args.steps, smoothing=0, dynamic_ncols=True)
 
     best_loss = 1e20
+    model.train()
 
     for epoch in range(args.steps):
         tloss = 0
@@ -110,7 +111,7 @@ def test_density1d(model, dataloader, args):
         for x in t:
             cnt += 1
             x_mb = x[0].to(args.device)
-            y_mb, log_diag_j_mb = model(x_mb)
+            y_mb = model(x_mb)
             results.append(y_mb)
         print(time.time() - start)
         return torch.cat(results)
@@ -240,6 +241,7 @@ def main():
     indices = torch.randperm(x.shape[0])[:n_tr_data]
 
     x = x[indices]
+
 
     dataset = TensorDataset(x)
     dataloader = DataLoader(dataset, batch_size=4096, shuffle=True)
