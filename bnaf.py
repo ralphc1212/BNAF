@@ -67,7 +67,6 @@ class BNAF(torch.nn.Sequential):
         grad = None
         
         for module in self._modules.values():
-            print('peek po')
             outputs, grad = module(outputs, grad)
                 
             grad = grad if len(grad.shape) == 4 else grad.view(grad.shape + [1, 1])
