@@ -333,7 +333,7 @@ def main():
 
     # testing data
     dataset = TensorDataset(d_tensors)
-    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False, num_workers=8)
 
     tmodel = create_model(args, verbose=True, test=True)
 
