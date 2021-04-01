@@ -268,6 +268,8 @@ def main():
     print('Creating BNAF model..')
     model = create_model(args, verbose=True)
     # model = model.double()
+
+    print('log:')
     for k, v in model.named_modules():
         print(k, v)
     exit()
