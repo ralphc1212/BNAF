@@ -17,6 +17,13 @@ from torch.utils.data import TensorDataset, DataLoader
 
 torch.set_default_dtype(torch.float64)
 
+def get_w(module):
+    if isinstance(module, MaskedWeightTE):
+        module.get_weights()
+    if hasattr(module, 'children'):
+        for submodule in module.children():
+            get_w(submodule)
+
 def create_model(args, verbose=False, test=False):
 
     if not test:
@@ -296,11 +303,8 @@ def main():
     model = create_model(args, verbose=True)
     # model = model.double()
 
-    tmodel = create_model(args, verbose=True, test=True)
 
-    print(model.state_dict().keys())
-    print(tmodel.state_dict().keys())
-    exit()
+
     # print('log:')
     # for k, v in model.named_modules():
     #     print(k, v)
@@ -331,6 +335,10 @@ def main():
     dataset = TensorDataset(d_tensors)
     dataloader = DataLoader(dataset, batch_size=2048, shuffle=False)
 
+    tmodel = create_model(args, verbose=True, test=True)
+
+    tmodel.load_state_dict(model.state_dict())
+    get_w(tmodel)
     results = test_density1d(model,dataloader,args)
 
     # np.savetxt('lognormal-100-layer1-nodes-8-trdata10k-var1e16-f64.txt', results.detach().cpu().numpy(),  fmt='%32.18f')
