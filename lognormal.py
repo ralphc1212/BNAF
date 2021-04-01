@@ -49,7 +49,34 @@ def create_model(args, verbose=False, test=False):
 
         return model
     else:
+        flows = []
+        for f in range(args.flows):
+            layers = []
+            for _ in range(args.layers - 1):
+                layers.append(MaskedWeightTE(1 * args.hidden_dim,
+                                           1 * args.hidden_dim, dim=1))
+                layers.append(Tanh())
+
+            flows.append(
+                BNAFTE(*([MaskedWeightTE(1, 1 * args.hidden_dim, dim=1), torch.nn.Tanh()] + \
+                       layers + \
+                       [MaskedWeightTE(1 * args.hidden_dim, 1, dim=1)]),\
+                     res='gated' if f < args.flows - 1 else False
+                )
+            )
+
+            if f < args.flows - 1:
+                flows.append(Permutation(1, 'flip'))
+
+        model = torch.nn.Sequential(*flows).to(args.device)
+
+        if verbose:
+            print('{}'.format(model))
+            print('Parameters={}, n_dims={}'.format(sum((p != 0).sum()
+                                                        if len(p.shape) > 1 else torch.tensor(p.shape).item()
+                                                        for p in model.parameters()), 1))
         return
+
 
 def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
@@ -269,10 +296,10 @@ def main():
     model = create_model(args, verbose=True)
     # model = model.double()
 
-    print('log:')
-    for k, v in model.named_modules():
-        print(k, v)
-    exit()
+    # print('log:')
+    # for k, v in model.named_modules():
+    #     print(k, v)
+    # exit()
 
     print('Creating optimizer..')
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, amsgrad=True)
