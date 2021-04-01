@@ -290,7 +290,7 @@ def main():
 
     # testing data
     dataset = TensorDataset(d_tensors)
-    dataloader = DataLoader(dataset, batch_size=4096, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=8192, shuffle=False)
 
     results = test_density1d(model,dataloader,args)
 
