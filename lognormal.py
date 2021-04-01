@@ -298,8 +298,8 @@ def main():
 
     tmodel = create_model(args, verbose=True, test=True)
 
-    print(model.keys())
-    print(tmodel.keys())
+    print(model.state_dict().keys())
+    print(tmodel.state_dict().keys())
     exit()
     # print('log:')
     # for k, v in model.named_modules():
