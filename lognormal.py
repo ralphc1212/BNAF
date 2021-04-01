@@ -111,7 +111,7 @@ def test_density1d(model, dataloader, args):
         for x in t:
             cnt += 1
             x_mb = x[0].to(args.device)
-            y_mb = model(x_mb)
+            y_mb, log_diag_j_mb = model(x_mb)
             results.append(y_mb)
         print(time.time() - start)
         return torch.cat(results)
@@ -214,7 +214,7 @@ def main():
     parser.add_argument('--learning_rate', type=float, default=1e-1)
     parser.add_argument('--batch_dim', type=int, default=200)
     parser.add_argument('--clip_norm', type=float, default=.1)
-    parser.add_argument('--steps', type=int, default=20)
+    parser.add_argument('--steps', type=int, default=15)
     
     parser.add_argument('--patience', type=int, default=2000)
     parser.add_argument('--decay', type=float, default=0.5)
