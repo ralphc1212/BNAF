@@ -17,37 +17,39 @@ from torch.utils.data import TensorDataset, DataLoader
 
 torch.set_default_dtype(torch.float64)
 
-def create_model(args, verbose=False):
-    
-    flows = []
-    for f in range(args.flows):
-        layers = []
-        for _ in range(args.layers - 1):
-            layers.append(MaskedWeight(1 * args.hidden_dim,
-                                       1 * args.hidden_dim, dim=1))
-            layers.append(Tanh())
+def create_model(args, verbose=False, test=False):
 
-        flows.append(
-            BNAF(*([MaskedWeight(1, 1 * args.hidden_dim, dim=1), Tanh()] + \
-                   layers + \
-                   [MaskedWeight(1 * args.hidden_dim, 1, dim=1)]),\
-                 res='gated' if f < args.flows - 1 else False
+    if not test:
+        flows = []
+        for f in range(args.flows):
+            layers = []
+            for _ in range(args.layers - 1):
+                layers.append(MaskedWeight(1 * args.hidden_dim,
+                                           1 * args.hidden_dim, dim=1))
+                layers.append(Tanh())
+
+            flows.append(
+                BNAF(*([MaskedWeight(1, 1 * args.hidden_dim, dim=1), Tanh()] + \
+                       layers + \
+                       [MaskedWeight(1 * args.hidden_dim, 1, dim=1)]),\
+                     res='gated' if f < args.flows - 1 else False
+                )
             )
-        )
 
-        if f < args.flows - 1:
-            flows.append(Permutation(1, 'flip'))
+            if f < args.flows - 1:
+                flows.append(Permutation(1, 'flip'))
 
-    model = Sequential(*flows).to(args.device)
-    
-    if verbose:
-        print('{}'.format(model))
-        print('Parameters={}, n_dims={}'.format(sum((p != 0).sum() 
-                                                    if len(p.shape) > 1 else torch.tensor(p.shape).item() 
-                                                    for p in model.parameters()), 1))
-    
-    return model
+        model = Sequential(*flows).to(args.device)
 
+        if verbose:
+            print('{}'.format(model))
+            print('Parameters={}, n_dims={}'.format(sum((p != 0).sum()
+                                                        if len(p.shape) > 1 else torch.tensor(p.shape).item()
+                                                        for p in model.parameters()), 1))
+
+        return model
+    else:
+        return
 
 def compute_log_p_x(model, x_mb):
     y_mb, log_diag_j_mb = model(x_mb)
@@ -266,6 +268,9 @@ def main():
     print('Creating BNAF model..')
     model = create_model(args, verbose=True)
     # model = model.double()
+    for k, v in model.named_modules():
+        print(k, v)
+    exit()
 
     print('Creating optimizer..')
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, amsgrad=True)
