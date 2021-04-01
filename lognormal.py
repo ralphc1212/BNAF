@@ -62,7 +62,7 @@ def create_model(args, verbose=False, test=False):
             for _ in range(args.layers - 1):
                 layers.append(MaskedWeightTE(1 * args.hidden_dim,
                                            1 * args.hidden_dim, dim=1))
-                layers.append(Tanh())
+                layers.append(torch.nn.Tanh())
 
             flows.append(
                 BNAFTE(*([MaskedWeightTE(1, 1 * args.hidden_dim, dim=1), torch.nn.Tanh()] + \
