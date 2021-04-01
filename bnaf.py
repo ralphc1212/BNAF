@@ -73,7 +73,6 @@ class BNAF(torch.nn.Sequential):
             grad = grad if len(grad.shape) == 4 else grad.view(grad.shape + [1, 1])
         
         assert inputs.shape[-1] == outputs.shape[-1]
-        exit()
         if self.res == 'normal':
             return inputs + outputs, torch.nn.functional.softplus(grad.squeeze()).sum(-1)
         elif self.res == 'gated':
@@ -324,9 +323,7 @@ class BNAFTE(torch.nn.Sequential):
         grad = None
 
         for module in self._modules.values():
-            outputs, grad = module(outputs, grad)
-
-            grad = grad if len(grad.shape) == 4 else grad.view(grad.shape + [1, 1])
+            outputs = module(outputs)
 
         assert inputs.shape[-1] == outputs.shape[-1]
 

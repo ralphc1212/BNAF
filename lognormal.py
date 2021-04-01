@@ -75,7 +75,7 @@ def create_model(args, verbose=False, test=False):
             print('Parameters={}, n_dims={}'.format(sum((p != 0).sum()
                                                         if len(p.shape) > 1 else torch.tensor(p.shape).item()
                                                         for p in model.parameters()), 1))
-        return
+        return model
 
 
 def compute_log_p_x(model, x_mb):
@@ -296,6 +296,11 @@ def main():
     model = create_model(args, verbose=True)
     # model = model.double()
 
+    tmodel = create_model(args, verbose=True, test=True)
+
+    print(model.keys())
+    print(tmodel.keys())
+    exit()
     # print('log:')
     # for k, v in model.named_modules():
     #     print(k, v)
