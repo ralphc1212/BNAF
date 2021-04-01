@@ -181,13 +181,6 @@ class MaskedWeight(torch.nn.Module):
                    i * (in_features // dim):] = 0
             
         self.register_buffer('mask_o', mask_o)
-        print(weight)
-        print(mask_d)
-        print(mask_o)
-        print(weight.shape)
-        print(mask_d.shape)
-        print(mask_o.shape)
-        exit()
 
     def get_weights(self):
         """
@@ -197,12 +190,16 @@ class MaskedWeight(torch.nn.Module):
         
         w = torch.exp(self._weight) * self.mask_d + self._weight * self.mask_o
 
+        print('1, ', w)
         w_squared_norm = (w ** 2).sum(-1, keepdim=True)
-        
-        w = self._diag_weight.exp() * w / w_squared_norm.sqrt()
-        
-        wpl = self._diag_weight + self._weight - 0.5 * torch.log(w_squared_norm) 
+        print('2, ', w_squared_norm)
 
+        w = self._diag_weight.exp() * w / w_squared_norm.sqrt()
+        print('3, ', w)
+
+        wpl = self._diag_weight + self._weight - 0.5 * torch.log(w_squared_norm) 
+        print('4, ', wpl)
+        exit()
         return w.t(), wpl.t()[self.mask_d.bool().t()].view(
             self.dim, self.in_features // self.dim, self.out_features // self.dim)
 
