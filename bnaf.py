@@ -159,7 +159,7 @@ class MaskedWeight(torch.nn.Module):
             weight[i * out_features // dim:(i + 1) * out_features // dim,
                    0:(i + 1) * in_features // dim] = torch.nn.init.xavier_uniform_(
                 torch.Tensor(out_features // dim, (i + 1) * in_features // dim))
-            
+
         self._weight = torch.nn.Parameter(weight)
         self._diag_weight = torch.nn.Parameter(torch.nn.init.uniform_(torch.Tensor(out_features, 1)).log())
         
@@ -181,6 +181,13 @@ class MaskedWeight(torch.nn.Module):
                    i * (in_features // dim):] = 0
             
         self.register_buffer('mask_o', mask_o)
+        print(weight)
+        print(mask_d)
+        print(mask_o)
+        print(weight.shape)
+        print(mask_d.shape)
+        print(mask_o.shape)
+        exit()
 
     def get_weights(self):
         """
