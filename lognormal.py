@@ -148,7 +148,7 @@ def test_density1d(model, dataloader, args):
             cnt += 1
             x_mb = x[0].to(args.device)
             y_mb = model(x_mb)
-            results.append(y_mb)
+            # results.append(y_mb)
         print(time.time() - start)
         return torch.cat(results)
         # iterator.set_postfix(loss='{:.2f}'.format(loss.data.cpu().numpy()), refresh=False)
